@@ -9,12 +9,19 @@
 /* Begin PBXBuildFile section */
 		6CBD34EF2566D52C009053D1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CBD34EE2566D52C009053D1 /* AppDelegate.swift */; };
 		6CBD34F12566D52C009053D1 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CBD34F02566D52C009053D1 /* SceneDelegate.swift */; };
-		6CBD34F32566D52C009053D1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CBD34F22566D52C009053D1 /* ContentView.swift */; };
 		6CBD34F52566D52D009053D1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6CBD34F42566D52D009053D1 /* Assets.xcassets */; };
 		6CBD34F82566D52D009053D1 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6CBD34F72566D52D009053D1 /* Preview Assets.xcassets */; };
 		6CBD34FB2566D52D009053D1 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6CBD34F92566D52D009053D1 /* LaunchScreen.storyboard */; };
 		6CBD35062566D52D009053D1 /* TakeawayTestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CBD35052566D52D009053D1 /* TakeawayTestTests.swift */; };
 		6CBD35112566D52D009053D1 /* TakeawayTestUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CBD35102566D52D009053D1 /* TakeawayTestUITests.swift */; };
+		6CBD351F2566D61D009053D1 /* RestaurantsTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CBD351E2566D61D009053D1 /* RestaurantsTableController.swift */; };
+		6CBD35212566D6CF009053D1 /* ActivityIndicatorFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CBD35202566D6CF009053D1 /* ActivityIndicatorFooterView.swift */; };
+		6CBD35242566D72A009053D1 /* TableView+Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CBD35232566D72A009053D1 /* TableView+Cell.swift */; };
+		6CBD35282566D772009053D1 /* RestaurantTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CBD35262566D772009053D1 /* RestaurantTableCell.swift */; };
+		6CBD35292566D772009053D1 /* RestaurantTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6CBD35272566D772009053D1 /* RestaurantTableCell.xib */; };
+		6CBD352B2566D8E7009053D1 /* RestaurantsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CBD352A2566D8E7009053D1 /* RestaurantsViewModel.swift */; };
+		6CBD352D2566DDC2009053D1 /* AppNavigator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CBD352C2566DDC2009053D1 /* AppNavigator.swift */; };
+		6CBD352F2566DDD8009053D1 /* Destination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CBD352E2566DDD8009053D1 /* Destination.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,7 +45,6 @@
 		6CBD34EB2566D52C009053D1 /* TakeawayTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TakeawayTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6CBD34EE2566D52C009053D1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6CBD34F02566D52C009053D1 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		6CBD34F22566D52C009053D1 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		6CBD34F42566D52D009053D1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6CBD34F72566D52D009053D1 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		6CBD34FA2566D52D009053D1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -49,6 +55,14 @@
 		6CBD350C2566D52D009053D1 /* TakeawayTestUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TakeawayTestUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6CBD35102566D52D009053D1 /* TakeawayTestUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TakeawayTestUITests.swift; sourceTree = "<group>"; };
 		6CBD35122566D52D009053D1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6CBD351E2566D61D009053D1 /* RestaurantsTableController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestaurantsTableController.swift; sourceTree = "<group>"; };
+		6CBD35202566D6CF009053D1 /* ActivityIndicatorFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityIndicatorFooterView.swift; sourceTree = "<group>"; };
+		6CBD35232566D72A009053D1 /* TableView+Cell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TableView+Cell.swift"; sourceTree = "<group>"; };
+		6CBD35262566D772009053D1 /* RestaurantTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestaurantTableCell.swift; sourceTree = "<group>"; };
+		6CBD35272566D772009053D1 /* RestaurantTableCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RestaurantTableCell.xib; sourceTree = "<group>"; };
+		6CBD352A2566D8E7009053D1 /* RestaurantsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestaurantsViewModel.swift; sourceTree = "<group>"; };
+		6CBD352C2566DDC2009053D1 /* AppNavigator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppNavigator.swift; sourceTree = "<group>"; };
+		6CBD352E2566DDD8009053D1 /* Destination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Destination.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,13 +113,16 @@
 		6CBD34ED2566D52C009053D1 /* TakeawayTest */ = {
 			isa = PBXGroup;
 			children = (
+				6CBD35252566D73A009053D1 /* Scenes */,
+				6CBD35222566D709009053D1 /* Extensions */,
 				6CBD34EE2566D52C009053D1 /* AppDelegate.swift */,
 				6CBD34F02566D52C009053D1 /* SceneDelegate.swift */,
-				6CBD34F22566D52C009053D1 /* ContentView.swift */,
 				6CBD34F42566D52D009053D1 /* Assets.xcassets */,
 				6CBD34F92566D52D009053D1 /* LaunchScreen.storyboard */,
 				6CBD34FC2566D52D009053D1 /* Info.plist */,
 				6CBD34F62566D52D009053D1 /* Preview Content */,
+				6CBD352C2566DDC2009053D1 /* AppNavigator.swift */,
+				6CBD352E2566DDD8009053D1 /* Destination.swift */,
 			);
 			path = TakeawayTest;
 			sourceTree = "<group>";
@@ -134,6 +151,26 @@
 				6CBD35122566D52D009053D1 /* Info.plist */,
 			);
 			path = TakeawayTestUITests;
+			sourceTree = "<group>";
+		};
+		6CBD35222566D709009053D1 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				6CBD35232566D72A009053D1 /* TableView+Cell.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		6CBD35252566D73A009053D1 /* Scenes */ = {
+			isa = PBXGroup;
+			children = (
+				6CBD351E2566D61D009053D1 /* RestaurantsTableController.swift */,
+				6CBD35202566D6CF009053D1 /* ActivityIndicatorFooterView.swift */,
+				6CBD35262566D772009053D1 /* RestaurantTableCell.swift */,
+				6CBD35272566D772009053D1 /* RestaurantTableCell.xib */,
+				6CBD352A2566D8E7009053D1 /* RestaurantsViewModel.swift */,
+			);
+			path = Scenes;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -241,6 +278,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6CBD34FB2566D52D009053D1 /* LaunchScreen.storyboard in Resources */,
+				6CBD35292566D772009053D1 /* RestaurantTableCell.xib in Resources */,
 				6CBD34F82566D52D009053D1 /* Preview Assets.xcassets in Resources */,
 				6CBD34F52566D52D009053D1 /* Assets.xcassets in Resources */,
 			);
@@ -267,9 +305,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6CBD35242566D72A009053D1 /* TableView+Cell.swift in Sources */,
+				6CBD352D2566DDC2009053D1 /* AppNavigator.swift in Sources */,
+				6CBD352B2566D8E7009053D1 /* RestaurantsViewModel.swift in Sources */,
+				6CBD35282566D772009053D1 /* RestaurantTableCell.swift in Sources */,
+				6CBD35212566D6CF009053D1 /* ActivityIndicatorFooterView.swift in Sources */,
+				6CBD352F2566DDD8009053D1 /* Destination.swift in Sources */,
 				6CBD34EF2566D52C009053D1 /* AppDelegate.swift in Sources */,
+				6CBD351F2566D61D009053D1 /* RestaurantsTableController.swift in Sources */,
 				6CBD34F12566D52C009053D1 /* SceneDelegate.swift in Sources */,
-				6CBD34F32566D52C009053D1 /* ContentView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
