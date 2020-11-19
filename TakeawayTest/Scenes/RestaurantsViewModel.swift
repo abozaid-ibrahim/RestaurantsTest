@@ -7,7 +7,6 @@
 //
 
 import Foundation
-typealias Restaurant = String
 protocol RestaurantsViewModelType {
 }
 

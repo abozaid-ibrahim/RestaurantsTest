@@ -10,7 +10,7 @@ import UIKit
 
 final class RestaurantsTableController: UITableViewController {
     private let viewModel: RestaurantsViewModelType
-    private var dataList: [Restaurant] = ["", "", ""]
+    private var dataList: [Restaurant] = []
 
     init(with viewModel: RestaurantsViewModelType = RestaurantsViewModel() ) {
         self.viewModel = viewModel
