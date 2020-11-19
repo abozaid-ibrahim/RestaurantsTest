@@ -47,4 +47,14 @@ enum Status: String, Codable {
     case closed
     case orderAhead = "order ahead"
     case statusOpen = "open"
+    var priority: Int {
+        switch self {
+        case .statusOpen:
+            return 0
+        case .orderAhead:
+            return 1
+        case .closed:
+            return 2
+        }
+    }
 }

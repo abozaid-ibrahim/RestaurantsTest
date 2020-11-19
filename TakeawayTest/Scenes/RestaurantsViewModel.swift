@@ -13,10 +13,18 @@ enum Filter {
     case none
     case name(String)
 }
+
 enum TableReload: Equatable {
     case all
     case row(Int)
     case none
+    static func == (lhs: TableReload, rhs: TableReload) -> Bool {
+        if case let .row(pos1) = lhs,
+            case let .row(pos2) = rhs {
+            return pos1 == pos2
+        }
+        return lhs == rhs
+    }
 }
 
 protocol RestaurantsViewModelType {
@@ -60,22 +68,20 @@ final class RestaurantsViewModel: RestaurantsViewModelType {
                 return
             }
             let filtered = cachedData.filter { $0.name.lowercased().contains(text.lowercased()) }
-            self.dataList = filtered
+            dataList = filtered.sortedByStatus()
             reload.onNext(.all)
         case .none:
             loadDataForFirstTime()
         }
     }
 
-    func toggleFavourite(at position: Int){
-        self.dataList[position].isFavourite.toggle()
-        self.reload.onNext(.row(position))
-        //since we don't have a remote  api I want to updated my cached data.
-        var item = self.cachedData.first(where: {$0 ==  self.dataList[position]})
+    func toggleFavourite(at position: Int) {
+        dataList[position].isFavourite.toggle()
+        reload.onNext(.row(position))
+        // since we don't have a remote  api I want to updated my cached data.
+        var item = cachedData.first(where: { $0 == self.dataList[position] })
         item?.isFavourite.toggle()
     }
-
-   
 }
 
 // MARK: private
@@ -96,12 +102,18 @@ private extension RestaurantsViewModel {
             switch result {
             case let .success(data):
                 self.cachedData = data
-                self.dataList = data
+                self.dataList = data.sortedByStatus()
                 self.reload.onNext(.all)
             case let .failure(error):
                 self.error.onNext(error.localizedDescription)
             }
             self.isLoading.onNext(false)
         }
+    }
+}
+
+extension Array where Element == Restaurant {
+    func sortedByStatus() -> [Restaurant] {
+        return sorted(by: { $0.status.priority < $1.status.priority })
     }
 }
