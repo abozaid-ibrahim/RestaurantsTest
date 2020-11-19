@@ -7,25 +7,8 @@
 //
 
 import Foundation
+import RxCocoa
 import RxSwift
-
-enum Filter {
-    case none
-    case name(String)
-}
-
-enum TableReload: Equatable {
-    case all
-    case row(Int)
-    case none
-    static func == (lhs: TableReload, rhs: TableReload) -> Bool {
-        if case let .row(pos1) = lhs,
-            case let .row(pos2) = rhs {
-            return pos1 == pos2
-        }
-        return lhs == rhs
-    }
-}
 
 protocol RestaurantsViewModelType {
     var dataList: [Restaurant] { get }
@@ -51,12 +34,14 @@ final class RestaurantsViewModel: RestaurantsViewModelType {
     private(set) var reload = PublishSubject<TableReload>()
     private(set) var dataList: [Restaurant] = []
     private(set) var cachedData: [Restaurant] = []
+    
     init(with dataLoader: RestaurantsDataSource = RestaurantsLocalLoader()) {
         self.dataLoader = dataLoader
         bindForSearch()
     }
 
     func searchCanceled() {
+        dataList = cachedData.sortedByStatus()
         reload.onNext(.all)
     }
 
@@ -67,8 +52,9 @@ final class RestaurantsViewModel: RestaurantsViewModelType {
                 loadDataForFirstTime()
                 return
             }
-            let filtered = cachedData.filter { $0.name.lowercased().contains(text.lowercased()) }
-            dataList = filtered.sortedByStatus()
+            dataList = cachedData
+                .filter { $0.name.lowercased().contains(text.lowercased()) }
+                .sortedByStatus()
             reload.onNext(.all)
         case .none:
             loadDataForFirstTime()
@@ -89,6 +75,7 @@ final class RestaurantsViewModel: RestaurantsViewModelType {
 private extension RestaurantsViewModel {
     func bindForSearch() {
         searchFor.distinctUntilChanged()
+            .debounce(.milliseconds(250), scheduler: SharingScheduler.make())
             .subscribe(onNext: { [weak self] text in
                 guard let self = self else { return }
                 self.loadData(with: .name(text))

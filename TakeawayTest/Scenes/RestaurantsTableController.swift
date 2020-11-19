@@ -27,8 +27,8 @@ final class RestaurantsTableController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         setupTableView()
+        setupSearchBar()
         bindToViewModel()
         viewModel.loadData(with: .none)
     }
@@ -57,6 +57,7 @@ private extension RestaurantsTableController {
     }
 
     func setupTableView() {
+        title = "Discover"
         tableView.tableFooterView = ActivityIndicatorFooterView()
         tableView.register(RestaurantTableCell.self)
         tableView.rowHeight = 140
@@ -85,5 +86,34 @@ private extension RestaurantsTableController {
                 self.indicator?.set(isLoading: $0)
             })
             .disposed(by: disposeBag)
+    }
+
+    func setupSearchBar() {
+        let searchController = UISearchController(searchResultsController: nil)
+        searchController.searchResultsUpdater = self
+        searchController.searchBar.delegate = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.searchBar.placeholder = "Search"
+        searchController.searchBar.isTranslucent = false
+        definesPresentationContext = true
+        navigationItem.searchController = searchController
+        navigationItem.hidesSearchBarWhenScrolling = false
+    }
+}
+
+// MARK: - UISearchResultsUpdating
+
+extension RestaurantsTableController: UISearchResultsUpdating, UISearchBarDelegate {
+    func updateSearchResults(for searchController: UISearchController) {
+        guard searchController.isActive else {
+            viewModel.searchCanceled()
+            return
+        }
+        guard let text = searchController.searchBar.text else { return }
+        viewModel.searchFor.onNext(text)
+    }
+
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        viewModel.searchFor.onNext(searchBar.text ?? "")
     }
 }
