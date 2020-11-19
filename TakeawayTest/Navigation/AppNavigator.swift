@@ -17,7 +17,7 @@ final class AppNavigator {
 
     func set(window: UIWindow) {
         AppNavigator.navigator = UINavigationController(rootViewController: Destination.restaurants.controller)
-        AppNavigator.navigator.setNavigationBarHidden(true, animated: true)
+        AppNavigator.navigator.setNavigationBarHidden(false, animated: true)
         window.rootViewController = AppNavigator.navigator
         window.makeKeyAndVisible()
     }

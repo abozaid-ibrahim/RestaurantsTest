@@ -14,8 +14,8 @@ protocol RestaurantsDataSource {
 final class RestaurantsLocalLoader: RestaurantsDataSource {
     func loadRestaurants(compeletion: @escaping (Result<[Restaurant], NetworkError>) -> Void) {
         do {
-            let response = try Bundle.main.decode([Restaurant].self, from: "sample.json")
-            compeletion(.success(response))
+            let response = try Bundle.main.decode(RestaurantsResponse.self, from: "sample.json")
+            compeletion(.success(response.restaurants))
         } catch {
             compeletion(.failure(.noData))
         }
