@@ -10,7 +10,6 @@
 		6CBD34EF2566D52C009053D1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CBD34EE2566D52C009053D1 /* AppDelegate.swift */; };
 		6CBD34F12566D52C009053D1 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CBD34F02566D52C009053D1 /* SceneDelegate.swift */; };
 		6CBD34F52566D52D009053D1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6CBD34F42566D52D009053D1 /* Assets.xcassets */; };
-		6CBD34F82566D52D009053D1 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6CBD34F72566D52D009053D1 /* Preview Assets.xcassets */; };
 		6CBD34FB2566D52D009053D1 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6CBD34F92566D52D009053D1 /* LaunchScreen.storyboard */; };
 		6CBD35062566D52D009053D1 /* TakeawayTestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CBD35052566D52D009053D1 /* TakeawayTestTests.swift */; };
 		6CBD35112566D52D009053D1 /* TakeawayTestUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CBD35102566D52D009053D1 /* TakeawayTestUITests.swift */; };
@@ -46,7 +45,6 @@
 		6CBD34EE2566D52C009053D1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6CBD34F02566D52C009053D1 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		6CBD34F42566D52D009053D1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		6CBD34F72566D52D009053D1 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		6CBD34FA2566D52D009053D1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		6CBD34FC2566D52D009053D1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6CBD35012566D52D009053D1 /* TakeawayTestTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TakeawayTestTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -113,26 +111,13 @@
 		6CBD34ED2566D52C009053D1 /* TakeawayTest */ = {
 			isa = PBXGroup;
 			children = (
+				6CBD35302566DE98009053D1 /* SupportingFiles */,
 				6CBD35252566D73A009053D1 /* Scenes */,
 				6CBD35222566D709009053D1 /* Extensions */,
-				6CBD34EE2566D52C009053D1 /* AppDelegate.swift */,
-				6CBD34F02566D52C009053D1 /* SceneDelegate.swift */,
-				6CBD34F42566D52D009053D1 /* Assets.xcassets */,
-				6CBD34F92566D52D009053D1 /* LaunchScreen.storyboard */,
-				6CBD34FC2566D52D009053D1 /* Info.plist */,
-				6CBD34F62566D52D009053D1 /* Preview Content */,
 				6CBD352C2566DDC2009053D1 /* AppNavigator.swift */,
 				6CBD352E2566DDD8009053D1 /* Destination.swift */,
 			);
 			path = TakeawayTest;
-			sourceTree = "<group>";
-		};
-		6CBD34F62566D52D009053D1 /* Preview Content */ = {
-			isa = PBXGroup;
-			children = (
-				6CBD34F72566D52D009053D1 /* Preview Assets.xcassets */,
-			);
-			path = "Preview Content";
 			sourceTree = "<group>";
 		};
 		6CBD35042566D52D009053D1 /* TakeawayTestTests */ = {
@@ -171,6 +156,18 @@
 				6CBD352A2566D8E7009053D1 /* RestaurantsViewModel.swift */,
 			);
 			path = Scenes;
+			sourceTree = "<group>";
+		};
+		6CBD35302566DE98009053D1 /* SupportingFiles */ = {
+			isa = PBXGroup;
+			children = (
+				6CBD34EE2566D52C009053D1 /* AppDelegate.swift */,
+				6CBD34F02566D52C009053D1 /* SceneDelegate.swift */,
+				6CBD34F42566D52D009053D1 /* Assets.xcassets */,
+				6CBD34F92566D52D009053D1 /* LaunchScreen.storyboard */,
+				6CBD34FC2566D52D009053D1 /* Info.plist */,
+			);
+			path = SupportingFiles;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -279,7 +276,6 @@
 			files = (
 				6CBD34FB2566D52D009053D1 /* LaunchScreen.storyboard in Resources */,
 				6CBD35292566D772009053D1 /* RestaurantTableCell.xib in Resources */,
-				6CBD34F82566D52D009053D1 /* Preview Assets.xcassets in Resources */,
 				6CBD34F52566D52D009053D1 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -479,10 +475,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_ASSET_PATHS = "\"TakeawayTest/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 475YN7ANSF;
 				ENABLE_PREVIEWS = YES;
-				INFOPLIST_FILE = TakeawayTest/Info.plist;
+				INFOPLIST_FILE = TakeawayTest/SupportingFiles/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -499,10 +495,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_ASSET_PATHS = "\"TakeawayTest/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 475YN7ANSF;
 				ENABLE_PREVIEWS = YES;
-				INFOPLIST_FILE = TakeawayTest/Info.plist;
+				INFOPLIST_FILE = TakeawayTest/SupportingFiles/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
