@@ -36,3 +36,7 @@ playground.xcworkspace
 # CocoaPods
  Pods/
  *.xcworkspace
+
+Pods/
+
+TakeawayTest.xcworkspace/
