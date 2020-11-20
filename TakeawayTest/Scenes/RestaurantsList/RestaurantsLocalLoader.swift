@@ -7,17 +7,23 @@
 //
 
 import Foundation
+import RxSwift
+
 protocol RestaurantsDataSource {
-    func loadRestaurants(compeletion: @escaping (Result<[Restaurant], NetworkError>) -> Void)
+    func loadRestaurants() -> Observable<[Restaurant]>
 }
 
 final class RestaurantsLocalLoader: RestaurantsDataSource {
-    func loadRestaurants(compeletion: @escaping (Result<[Restaurant], NetworkError>) -> Void) {
-        do {
-            let response = try Bundle.main.decode(RestaurantsResponse.self, from: "RestaurantsData.json")
-            compeletion(.success(response.restaurants))
-        } catch {
-            compeletion(.failure(.noData))
-        }
+    func loadRestaurants() -> Observable<[Restaurant]> {
+        return Observable<[Restaurant]>.create({ observer in
+            do {
+                let response = try Bundle.main.decode(RestaurantsResponse.self, from: "RestaurantsData.json")
+                observer.onNext(response.restaurants)
+                observer.onCompleted()
+            } catch {
+                observer.onError(NetworkError.failedToParseData)
+            }
+            return Disposables.create()
+        })
     }
 }

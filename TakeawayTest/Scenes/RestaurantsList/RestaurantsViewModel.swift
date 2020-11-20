@@ -62,7 +62,7 @@ final class RestaurantsViewModel: RestaurantsViewModelType {
     func toggleFavourite(at position: Int) {
         dataList[position].isFavourite.toggle()
         reload.onNext(.row(position))
-        // since we don't have a remote  api I want to updated my cached data.
+        /// since we don't have a remote  api I want to updated my cached data.
         guard let index = cachedData.firstIndex(where: { $0 == self.dataList[position] }) else { return }
         cachedData[index].isFavourite.toggle()
     }
@@ -87,6 +87,7 @@ private extension RestaurantsViewModel {
     func bindForSearch() {
         searchFor.distinctUntilChanged()
             .debounce(.milliseconds(250), scheduler: SharingScheduler.make())
+            .observeOn(ConcurrentDispatchQueueScheduler(qos: .default))
             .subscribe(onNext: { [weak self] text in
                 guard let self = self else { return }
                 self.loadRestaurants(with: text)
@@ -95,18 +96,18 @@ private extension RestaurantsViewModel {
 
     func loadDataForFirstTime(_ name: String) {
         isLoading.onNext(true)
-        dataLoader.loadRestaurants { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case let .success(data):
+        dataLoader.loadRestaurants()
+            .observeOn(ConcurrentDispatchQueueScheduler(qos: .default))
+            .subscribe(onNext: { [weak self] data in
+                guard let self = self else { return }
                 self.cachedData = data
                 self.dataList = data
                 name.isEmpty ? self.sortAndUpdateUI() : self.filter(by: name)
-            case let .failure(error):
-                self.error.onNext(error.localizedDescription)
-            }
-            self.isLoading.onNext(false)
-        }
+                self.isLoading.onNext(false)
+            }, onError: { [weak self] error in
+                self?.error.onNext(error.localizedDescription)
+                self?.isLoading.onNext(false)
+            }).dispose()
     }
 }
 
