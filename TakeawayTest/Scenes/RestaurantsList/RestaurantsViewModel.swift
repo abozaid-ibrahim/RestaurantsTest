@@ -132,9 +132,9 @@ extension Array where Element == Restaurant {
         case .popularity:
             return sorted(by: { $0.sortingValues.popularity > $1.sortingValues.popularity })
         case .deliveryCosts:
-            return sorted(by: { $0.sortingValues.deliveryCosts < $1.sortingValues.deliveryCosts })
+            return sorted(by: { $0.sortingValues.deliveryCosts > $1.sortingValues.deliveryCosts })
         case .minimumCost:
-            return sorted(by: { $0.sortingValues.minCost < $1.sortingValues.minCost })
+            return sorted(by: { $0.sortingValues.minCost > $1.sortingValues.minCost })
         }
     }
 }

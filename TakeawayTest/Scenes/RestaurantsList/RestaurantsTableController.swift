@@ -65,6 +65,7 @@ private extension RestaurantsTableController {
         tableView.tableFooterView = ActivityIndicatorFooterView()
         tableView.register(RestaurantTableCell.self)
         tableView.showsVerticalScrollIndicator = false
+        navigationController?.hidesBarsOnSwipe = true
     }
 
     @objc func openFilters(_ sender: Any) {
