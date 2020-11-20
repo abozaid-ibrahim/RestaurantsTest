@@ -58,11 +58,16 @@ private extension RestaurantsTableController {
 
     func setupTableView() {
         title = "Discover"
+        self.navigationItem.leftBarButtonItem = .init(title: "Filter", style: .plain, target: self, action: #selector(<#T##@objc method#>))
         tableView.tableFooterView = ActivityIndicatorFooterView()
         tableView.register(RestaurantTableCell.self)
         tableView.rowHeight = 140
     }
-
+    @objc func openFilters(_ sender:Any){
+//        let controller = Destination.filter.controller
+        
+        AppNavigator.shared.push(.filter)
+    }
     func bindToViewModel() {
         viewModel.reload
             .asDriver(onErrorJustReturn: .none)

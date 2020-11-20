@@ -22,7 +22,9 @@ final class AppNavigator {
         window.makeKeyAndVisible()
     }
 
-    func push(_ dest: Destination) {
-        AppNavigator.navigator.pushViewController(dest.controller, animated: true)
+    func push(_ dest: Destination) -> UIViewController {
+        let controller = dest.controller
+        AppNavigator.navigator.pushViewController(controller, animated: true)
+        return controller
     }
 }

@@ -15,9 +15,7 @@ enum Destination {
     var controller: UIViewController {
         switch self {
         case .filter:
-            let filterController = UIViewController()
-
-            return filterController
+            return SortingController()
         case .restaurants:
             return RestaurantsTableController()
         }
