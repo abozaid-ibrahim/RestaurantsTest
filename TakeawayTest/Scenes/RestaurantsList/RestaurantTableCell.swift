@@ -14,13 +14,13 @@ typealias ButtonAction = () -> Void
 final class RestaurantTableCell: UITableViewCell {
     private let favouriteImage = UIImage(named: "favorite")
     private let unFavouriteImage = UIImage(named: "unfavorite")
-
     @IBOutlet private var nameLabel: UILabel!
     @IBOutlet private var statusLabel: UILabel!
+    @IBOutlet private var costLabel: UILabel!
     @IBOutlet private var distanceLabel: UILabel!
     @IBOutlet private var deliveryLabel: UILabel!
     @IBOutlet private var popularityLabel: UILabel!
-    @IBOutlet private var costLabel: UILabel!
+    @IBOutlet private var averageProductPriceLabel: UILabel!
 
     @IBOutlet private var favouriteView: UIImageView!
     @IBOutlet private var ratingBar: RatingBar!
@@ -39,18 +39,21 @@ final class RestaurantTableCell: UITableViewCell {
         favouriteChanged = nil
     }
 
-    func setData(for restaurant: Restaurant,
-                 onFavourite: @escaping ButtonAction) {
+    func setData(for restaurant: Restaurant, onFavourite: @escaping ButtonAction) {
         favouriteChanged = onFavourite
         nameLabel.text = restaurant.name
-        statusLabel.text = restaurant.status.rawValue
+        statusLabel.text = restaurant.status.rawValue.capitalized
         statusLabel.backgroundColor = restaurant.status.color.withAlphaComponent(0.2)
         ratingBar.rating = CGFloat(restaurant.sortingValues.ratingAverage)
         favouriteView.image = restaurant.isFavourite ? favouriteImage : unFavouriteImage
-        deliveryLabel.attributedText = .text(with: restaurant.sortingValues.deliveryCosts, and: "delivery-man")
-        costLabel.attributedText = .text(with: restaurant.sortingValues.averageProductPrice, and: "money-bag")
-        popularityLabel.attributedText = .text(with: restaurant.sortingValues.popularity, and: "popularity")
-        distanceLabel.attributedText = .text(with: restaurant.sortingValues.distance, and: "fast-time")
+        deliveryLabel.attributedText = .text(with: restaurant.sortingValues.deliveryCosts.formattedPrice,
+                                             and: "delivery")
+        costLabel.attributedText = .text(with: "Min. \(restaurant.sortingValues.minCost.formattedPrice)",
+                                         and: "money-bag")
+        popularityLabel.attributedText = .text(with: "Pop: \(restaurant.sortingValues.popularity)",
+                                               and: "like")
+        distanceLabel.attributedText = .text(with: restaurant.sortingValues.distance.formattedDistance,
+                                             and: "distance")
     }
 
     @objc private func toggleFavourite(_ sender: UITapGestureRecognizer) {

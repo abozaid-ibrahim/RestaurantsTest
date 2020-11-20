@@ -13,7 +13,7 @@ extension NSAttributedString {
     static func text<T>(with value: T, and icon: String) -> NSAttributedString {
         let attachment = NSTextAttachment()
         attachment.image = UIImage(named: icon)
-        attachment.bounds = CGRect(x: 0, y: -4, width: 15, height: 15)
+        attachment.bounds = CGRect(x: 0, y: -2, width: 15, height: 15)
         let attachmentStr = NSAttributedString(attachment: attachment)
         let iconedString = NSMutableAttributedString(string: "")
         iconedString.append(attachmentStr)

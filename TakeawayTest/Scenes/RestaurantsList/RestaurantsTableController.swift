@@ -18,6 +18,7 @@ final class RestaurantsTableController: UITableViewController {
     init(with viewModel: RestaurantsViewModelType = RestaurantsViewModel()) {
         self.viewModel = viewModel
         super.init(style: .plain)
+        title = .discover
     }
 
     @available(*, unavailable)
@@ -30,7 +31,7 @@ final class RestaurantsTableController: UITableViewController {
         setupTableView()
         setupSearchBar()
         bindToViewModel()
-        viewModel.loadData(with: .none)
+        viewModel.loadRestaurants(with: "")
     }
 }
 
@@ -57,11 +58,13 @@ private extension RestaurantsTableController {
     }
 
     func setupTableView() {
-        title = "Discover"
-        navigationItem.rightBarButtonItem = .init(title: "Filter", style: .plain, target: self, action: #selector(openFilters(_:)))
+        navigationItem.rightBarButtonItem = .init(title: .sort,
+                                                  style: .plain,
+                                                  target: self,
+                                                  action: #selector(openFilters(_:)))
         tableView.tableFooterView = ActivityIndicatorFooterView()
         tableView.register(RestaurantTableCell.self)
-        tableView.rowHeight = 140
+        tableView.showsVerticalScrollIndicator = false
     }
 
     @objc func openFilters(_ sender: Any) {
@@ -101,7 +104,7 @@ private extension RestaurantsTableController {
         searchController.searchResultsUpdater = self
         searchController.searchBar.delegate = self
         searchController.obscuresBackgroundDuringPresentation = false
-        searchController.searchBar.placeholder = "Search"
+        searchController.searchBar.placeholder = .search
         searchController.searchBar.isTranslucent = false
         definesPresentationContext = true
         navigationItem.searchController = searchController
@@ -117,11 +120,16 @@ extension RestaurantsTableController: UISearchResultsUpdating, UISearchBarDelega
             viewModel.searchCanceled()
             return
         }
-        guard let text = searchController.searchBar.text else { return }
-        viewModel.searchFor.onNext(text)
+        viewModel.searchFor.onNext(searchController.searchBar.text ?? "")
     }
 
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         viewModel.searchFor.onNext(searchBar.text ?? "")
     }
+}
+
+extension String {
+    static var sort: String { return "Sort".localizedCapitalized }
+    static var search: String { return "Search".localizedCapitalized }
+    static var discover: String { return "Discover".localizedCapitalized }
 }

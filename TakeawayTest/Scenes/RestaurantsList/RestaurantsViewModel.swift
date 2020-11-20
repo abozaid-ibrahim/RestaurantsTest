@@ -14,20 +14,18 @@ protocol RestaurantsViewModelType {
     var dataList: [Restaurant] { get }
     var error: PublishSubject<String> { get }
     var searchFor: PublishSubject<String> { get }
-    func sort(by type: SortingCreteria)
     var isLoading: PublishSubject<Bool> { get }
     var reload: PublishSubject<TableReload> { get }
     func searchCanceled()
-    func loadData(with filter: Filter)
+    func sort(by type: SortingCreteria)
+    func loadRestaurants(with name: String)
     func toggleFavourite(at position: Int)
 }
 
 final class RestaurantsViewModel: RestaurantsViewModelType {
     private let disposeBag = DisposeBag()
     private let dataLoader: RestaurantsDataSource
-
     let error = PublishSubject<String>()
-
     let searchFor = PublishSubject<String>()
     let isLoading = PublishSubject<Bool>()
     let isSearchLoading = PublishSubject<Bool>()
@@ -53,18 +51,15 @@ final class RestaurantsViewModel: RestaurantsViewModelType {
         sortAndUpdateUI()
     }
 
-    func loadData(with filter: Filter = .none) {
-        switch filter {
-        case let .name(text):
-            guard !dataList.isEmpty else {
-                loadDataForFirstTime()
-                return
-            }
-            dataList = cachedData
-                .filter { $0.name.lowercased().contains(text.lowercased()) }
-            sortAndUpdateUI()
-        case .none:
+    func loadRestaurants(with name: String) {
+        if cachedData.isEmpty {
             loadDataForFirstTime()
+        } else if name.isEmpty {
+            searchCanceled()
+        } else {
+            dataList = cachedData
+                .filter { $0.name.lowercased().contains(name.lowercased()) }
+            sortAndUpdateUI()
         }
     }
 
@@ -72,8 +67,8 @@ final class RestaurantsViewModel: RestaurantsViewModelType {
         dataList[position].isFavourite.toggle()
         reload.onNext(.row(position))
         // since we don't have a remote  api I want to updated my cached data.
-        var item = cachedData.first(where: { $0 == self.dataList[position] })
-        item?.isFavourite.toggle()
+        guard let index = cachedData.firstIndex(where: { $0 == self.dataList[position] }) else { return }
+        cachedData[index].isFavourite.toggle()
     }
 }
 
@@ -92,7 +87,7 @@ private extension RestaurantsViewModel {
             .debounce(.milliseconds(250), scheduler: SharingScheduler.make())
             .subscribe(onNext: { [weak self] text in
                 guard let self = self else { return }
-                self.loadData(with: .name(text))
+                self.loadRestaurants(with: text)
             }).disposed(by: disposeBag)
     }
 

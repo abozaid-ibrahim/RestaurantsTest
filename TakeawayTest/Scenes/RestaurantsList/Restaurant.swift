@@ -17,6 +17,7 @@ struct Restaurant: Equatable {
     let status: Status
     let sortingValues: SortingValues
     var isFavourite: Bool
+
     static func == (lhs: Restaurant, rhs: Restaurant) -> Bool {
         return lhs.name == rhs.name
     }
@@ -33,14 +34,14 @@ extension Restaurant: Codable {
 }
 
 struct SortingValues: Codable {
-    let bestMatch: Int
-    let newest: Int
+    let bestMatch: Double
+    let newest: Double
     let ratingAverage: Double
-    let distance: Int
-    let popularity: Int
-    let averageProductPrice: Int
-    let deliveryCosts: Int
-    let minCost: Int
+    let distance: Double
+    let popularity: Double
+    let averageProductPrice: Double
+    let deliveryCosts: Double
+    let minCost: Double
 }
 
 enum Status: String, Codable {

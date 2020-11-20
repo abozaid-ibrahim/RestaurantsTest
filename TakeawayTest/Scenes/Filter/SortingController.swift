@@ -11,10 +11,11 @@ import UIKit
 
 final class SortingController: UITableViewController {
     private var dataList: [SortingCreteria] = SortingCreteria.allCases
-    private (set)var disposeBag = DisposeBag()
+    private(set) var disposeBag = DisposeBag()
     let selectedFilter: PublishSubject<SortingCreteria> = .init()
     init() {
         super.init(style: .plain)
+        title = .sortedBy
     }
 
     @available(*, unavailable)
@@ -43,7 +44,7 @@ extension SortingController {
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         selectedFilter.onNext(dataList[indexPath.row])
-        self.navigationController?.popViewController(animated: true)
+        navigationController?.popViewController(animated: true)
     }
 }
 
@@ -86,4 +87,8 @@ enum SortingCreteria: String, CaseIterable {
             return "Minimum cost"
         }
     }
+}
+
+extension String {
+    static var sortedBy: String { "Sort By".localizedCapitalized }
 }

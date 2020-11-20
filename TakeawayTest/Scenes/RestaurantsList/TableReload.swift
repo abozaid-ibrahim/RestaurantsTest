@@ -7,12 +7,6 @@
 //
 
 import Foundation
-
-enum Filter {
-    case none
-    case name(String)
-}
-
 enum TableReload: Equatable {
     case all
     case row(Int)
