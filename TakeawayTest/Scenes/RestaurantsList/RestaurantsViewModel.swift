@@ -14,6 +14,7 @@ protocol RestaurantsViewModelType {
     var dataList: [Restaurant] { get }
     var error: PublishSubject<String> { get }
     var searchFor: PublishSubject<String> { get }
+    func sort(by type: SortingCreteria)
     var isLoading: PublishSubject<Bool> { get }
     var reload: PublishSubject<TableReload> { get }
     func searchCanceled()
@@ -26,6 +27,7 @@ final class RestaurantsViewModel: RestaurantsViewModelType {
     private let dataLoader: RestaurantsDataSource
 
     let error = PublishSubject<String>()
+
     let searchFor = PublishSubject<String>()
     let isLoading = PublishSubject<Bool>()
     let isSearchLoading = PublishSubject<Bool>()
@@ -34,15 +36,21 @@ final class RestaurantsViewModel: RestaurantsViewModelType {
     private(set) var reload = PublishSubject<TableReload>()
     private(set) var dataList: [Restaurant] = []
     private(set) var cachedData: [Restaurant] = []
-    
+    private(set) var sortingType: SortingCreteria?
+
     init(with dataLoader: RestaurantsDataSource = RestaurantsLocalLoader()) {
         self.dataLoader = dataLoader
         bindForSearch()
     }
 
     func searchCanceled() {
-        dataList = cachedData.sortedByStatus()
-        reload.onNext(.all)
+        dataList = cachedData
+        sortAndUpdateUI()
+    }
+
+    func sort(by type: SortingCreteria) {
+        sortingType = type
+        sortAndUpdateUI()
     }
 
     func loadData(with filter: Filter = .none) {
@@ -54,8 +62,7 @@ final class RestaurantsViewModel: RestaurantsViewModelType {
             }
             dataList = cachedData
                 .filter { $0.name.lowercased().contains(text.lowercased()) }
-                .sortedByStatus()
-            reload.onNext(.all)
+            sortAndUpdateUI()
         case .none:
             loadDataForFirstTime()
         }
@@ -73,6 +80,13 @@ final class RestaurantsViewModel: RestaurantsViewModelType {
 // MARK: private
 
 private extension RestaurantsViewModel {
+    func sortAndUpdateUI() {
+        dataList = dataList
+            .sorted(by: sortingType)
+            .sortedByStatus()
+        reload.onNext(.all)
+    }
+
     func bindForSearch() {
         searchFor.distinctUntilChanged()
             .debounce(.milliseconds(250), scheduler: SharingScheduler.make())
@@ -89,8 +103,8 @@ private extension RestaurantsViewModel {
             switch result {
             case let .success(data):
                 self.cachedData = data
-                self.dataList = data.sortedByStatus()
-                self.reload.onNext(.all)
+                self.dataList = data
+                self.sortAndUpdateUI()
             case let .failure(error):
                 self.error.onNext(error.localizedDescription)
             }
@@ -102,5 +116,30 @@ private extension RestaurantsViewModel {
 extension Array where Element == Restaurant {
     func sortedByStatus() -> [Restaurant] {
         return sorted(by: { $0.status.priority < $1.status.priority })
+    }
+
+    func sorted(by: SortingCreteria?) -> [Restaurant] {
+        guard let sort = by else {
+            return self
+        }
+        /// try to use object key path
+        switch sort {
+        case .bestMatch:
+            return sorted(by: { $0.sortingValues.bestMatch > $1.sortingValues.bestMatch })
+        case .averageProductPrice:
+            return sorted(by: { $0.sortingValues.averageProductPrice > $1.sortingValues.averageProductPrice })
+        case .newest:
+            return sorted(by: { $0.sortingValues.newest > $1.sortingValues.newest })
+        case .ratingAverage:
+            return sorted(by: { $0.sortingValues.ratingAverage > $1.sortingValues.ratingAverage })
+        case .distance:
+            return sorted(by: { $0.sortingValues.distance > $1.sortingValues.distance })
+        case .popularity:
+            return sorted(by: { $0.sortingValues.popularity > $1.sortingValues.popularity })
+        case .deliveryCosts:
+            return sorted(by: { $0.sortingValues.deliveryCosts < $1.sortingValues.deliveryCosts })
+        case .minimumCost:
+            return sorted(by: { $0.sortingValues.minCost < $1.sortingValues.minCost })
+        }
     }
 }
