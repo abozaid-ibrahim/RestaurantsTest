@@ -52,15 +52,11 @@ final class RestaurantsViewModel: RestaurantsViewModelType {
     }
 
     func loadRestaurants(with name: String) {
-        if cachedData.isEmpty {
-            loadDataForFirstTime()
-        } else if name.isEmpty {
-            searchCanceled()
-        } else {
-            dataList = cachedData
-                .filter { $0.name.lowercased().contains(name.lowercased()) }
-            sortAndUpdateUI()
+        guard cachedData.isEmpty else {
+            name.isEmpty ? searchCanceled() : filter(by: name)
+            return
         }
+        loadDataForFirstTime(name)
     }
 
     func toggleFavourite(at position: Int) {
@@ -75,6 +71,12 @@ final class RestaurantsViewModel: RestaurantsViewModelType {
 // MARK: private
 
 private extension RestaurantsViewModel {
+    func filter(by name: String) {
+        dataList = cachedData
+            .filter { $0.name.lowercased().contains(name.lowercased()) }
+        sortAndUpdateUI()
+    }
+
     func sortAndUpdateUI() {
         dataList = dataList
             .sorted(by: sortingType)
@@ -91,7 +93,7 @@ private extension RestaurantsViewModel {
             }).disposed(by: disposeBag)
     }
 
-    func loadDataForFirstTime() {
+    func loadDataForFirstTime(_ name: String) {
         isLoading.onNext(true)
         dataLoader.loadRestaurants { [weak self] result in
             guard let self = self else { return }
@@ -99,7 +101,7 @@ private extension RestaurantsViewModel {
             case let .success(data):
                 self.cachedData = data
                 self.dataList = data
-                self.sortAndUpdateUI()
+                name.isEmpty ? self.sortAndUpdateUI() : self.filter(by: name)
             case let .failure(error):
                 self.error.onNext(error.localizedDescription)
             }
