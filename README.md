@@ -50,8 +50,8 @@ This application uses the Model-View-ViewModel (refered to as MVVM) UI architect
 
 #### Screen shots:
 
-![Restaurants (dark) ](https://github.com/abuzeid-ibrahim/TakeawayTest/Screenshots/main_dark.png?raw=true)
-![Restaurants (light) ](https://github.com/abuzeid-ibrahim/TakeawayTest/Screenshots/main.png?raw=true)
+![Restaurants (dark) ](https://github.com/abuzeid-ibrahim/TakeawayTest/blob/master/Screenshots/main_dark.png?raw=true)
+![Restaurants (light) ](https://github.com/abuzeid-ibrahim/TakeawayTest/blob/master/Screenshots/main.png?raw=true)
 
-![Sorting (dark) ](https://github.com/abuzeid-ibrahim/TakeawayTest/Screenshots/filter_dark.png?raw=true)
-![sorting (light) ](https://github.com/abuzeid-ibrahim/TakeawayTest/Screenshots/filter.png?raw=true)
+![Sorting (dark) ](https://github.com/abuzeid-ibrahim/TakeawayTest/blob/master/Screenshots/filter_dark.png?raw=true)
+![sorting (light) ](https://github.com/abuzeid-ibrahim/TakeawayTest/blob/master/Screenshots/filter.png?raw=true)

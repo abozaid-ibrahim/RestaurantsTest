@@ -7,8 +7,6 @@ target 'TakeawayTest' do
   pod 'RxCocoa'
   pod 'SwiftLint'
 
-  # Pods for TakeawayTest
-
   target 'TakeawayTestTests' do
     inherit! :search_paths
         pod 'RxTest'
@@ -18,6 +16,7 @@ target 'TakeawayTest' do
   end
 
 end
+ # Enable TRACE_RESOURCES for RxSwift debugging
 post_install do |installer|
    installer.pods_project.targets.each do |target|
       if target.name == 'RxSwift'
