@@ -21,7 +21,6 @@ public extension Bundle {
             let decoder = JSONDecoder()
             return try decoder.decode(T.self, from: data)
         } catch {
-            log(error, level: .error)
             throw NetworkError.failedToParseData
         }
     }

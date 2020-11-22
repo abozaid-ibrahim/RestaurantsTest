@@ -14,7 +14,6 @@
 		6C2501BA2566DF9D003B7C0F /* RestaurantsData.json in Resources */ = {isa = PBXBuildFile; fileRef = 6C2501B92566DF9D003B7C0F /* RestaurantsData.json */; };
 		6C2501BC2566DFCF003B7C0F /* RestaurantsLocalLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C2501BB2566DFCF003B7C0F /* RestaurantsLocalLoader.swift */; };
 		6C2501BE2566E028003B7C0F /* Data+Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C2501BD2566E028003B7C0F /* Data+Codable.swift */; };
-		6C2501C02566E043003B7C0F /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C2501BF2566E043003B7C0F /* Logger.swift */; };
 		6C2501C22566E050003B7C0F /* Bundle+Decoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C2501C12566E050003B7C0F /* Bundle+Decoder.swift */; };
 		6C2501C42566E092003B7C0F /* NetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C2501C32566E092003B7C0F /* NetworkError.swift */; };
 		6C2501C62566E111003B7C0F /* Restaurant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C2501C52566E111003B7C0F /* Restaurant.swift */; };
@@ -69,10 +68,10 @@
 		6C2501B92566DF9D003B7C0F /* RestaurantsData.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = RestaurantsData.json; sourceTree = "<group>"; };
 		6C2501BB2566DFCF003B7C0F /* RestaurantsLocalLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestaurantsLocalLoader.swift; sourceTree = "<group>"; };
 		6C2501BD2566E028003B7C0F /* Data+Codable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Codable.swift"; sourceTree = "<group>"; };
-		6C2501BF2566E043003B7C0F /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		6C2501C12566E050003B7C0F /* Bundle+Decoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+Decoder.swift"; sourceTree = "<group>"; };
 		6C2501C32566E092003B7C0F /* NetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkError.swift; sourceTree = "<group>"; };
 		6C2501C52566E111003B7C0F /* Restaurant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Restaurant.swift; sourceTree = "<group>"; };
+		6C41C628256ACC1D00F29496 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		6C7B1B652566FA03008DE835 /* UIViewController+Error.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Error.swift"; sourceTree = "<group>"; };
 		6C7B1B6825670460008DE835 /* RatingBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingBar.swift; sourceTree = "<group>"; };
 		6C7B1B6A25670A52008DE835 /* UIView+Constrains.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Constrains.swift"; sourceTree = "<group>"; };
@@ -171,11 +170,20 @@
 			path = Navigation;
 			sourceTree = "<group>";
 		};
+		6C41C629256ACC8600F29496 /* Modules */ = {
+			isa = PBXGroup;
+			children = (
+				6C2501B82566DF6B003B7C0F /* Navigation */,
+				6C7B1B6725670405008DE835 /* Components */,
+				6CBD35222566D709009053D1 /* Extensions */,
+			);
+			path = Modules;
+			sourceTree = "<group>";
+		};
 		6C7B1B6725670405008DE835 /* Components */ = {
 			isa = PBXGroup;
 			children = (
 				6CA243ED256A02D900FC4E7A /* ActivityIndicatorView.swift */,
-				6C2501BF2566E043003B7C0F /* Logger.swift */,
 				6C7B1B6825670460008DE835 /* RatingBar.swift */,
 				6C7B1B7025672614008DE835 /* PaddingLabel.swift */,
 			);
@@ -210,6 +218,7 @@
 		6CBD34E22566D52C009053D1 = {
 			isa = PBXGroup;
 			children = (
+				6C41C628256ACC1D00F29496 /* README.md */,
 				6CBD34ED2566D52C009053D1 /* TakeawayTest */,
 				6CBD35042566D52D009053D1 /* TakeawayTestTests */,
 				6CBD350F2566D52D009053D1 /* TakeawayTestUITests */,
@@ -233,10 +242,8 @@
 			isa = PBXGroup;
 			children = (
 				6CBD35252566D73A009053D1 /* Scenes */,
+				6C41C629256ACC8600F29496 /* Modules */,
 				6CBD35302566DE98009053D1 /* SupportingFiles */,
-				6C2501B82566DF6B003B7C0F /* Navigation */,
-				6C7B1B6725670405008DE835 /* Components */,
-				6CBD35222566D709009053D1 /* Extensions */,
 			);
 			path = TakeawayTest;
 			sourceTree = "<group>";
@@ -594,7 +601,6 @@
 				6C7B1B6925670460008DE835 /* RatingBar.swift in Sources */,
 				6C7B1B6F2567254F008DE835 /* UIView+Layer.swift in Sources */,
 				6C7B1B7125672614008DE835 /* PaddingLabel.swift in Sources */,
-				6C2501C02566E043003B7C0F /* Logger.swift in Sources */,
 				6CBD34EF2566D52C009053D1 /* AppDelegate.swift in Sources */,
 				6C2501BC2566DFCF003B7C0F /* RestaurantsLocalLoader.swift in Sources */,
 				6CBD351F2566D61D009053D1 /* RestaurantsTableController.swift in Sources */,

@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-extension NSAttributedString {
+public extension NSAttributedString {
     static func text<T>(with value: T, and icon: String) -> NSAttributedString {
         let attachment = NSTextAttachment()
         attachment.image = UIImage(named: icon)

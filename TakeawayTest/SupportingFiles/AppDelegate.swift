@@ -28,9 +28,9 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         #if DEBUG
             _ = Observable<Int>.interval(.seconds(2), scheduler: ConcurrentDispatchQueueScheduler(qos: .default))
                 .subscribe(onNext: { _ in
-                    log("\(RxSwift.Resources.total)")
+                    print("\(RxSwift.Resources.total)")
                 })
-            log("\(RxSwift.Resources.total)")
+            print("\(RxSwift.Resources.total)")
         #endif
     }
 }

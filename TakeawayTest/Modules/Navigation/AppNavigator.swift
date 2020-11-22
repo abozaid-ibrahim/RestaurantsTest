@@ -22,6 +22,7 @@ final class AppNavigator {
         window.makeKeyAndVisible()
     }
 
+    @discardableResult
     func push(_ dest: Destination) -> UIViewController {
         let controller = dest.controller
         AppNavigator.navigator.pushViewController(controller, animated: true)

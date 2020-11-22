@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-extension UIView {
+public extension UIView {
     func setConstrainsEqualToParentEdges(top: Float = 0, bottom: Float = 0, leading: Float = 0, trailing: Float = 0) {
         guard let parent = superview else {
             fatalError("This view doesn't have a parent")

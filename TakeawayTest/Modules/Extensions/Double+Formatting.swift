@@ -8,7 +8,7 @@
 
 import Foundation
 
-extension Double {
+public extension Double {
     private var locale: Locale { return Locale(identifier: "en_DE") }
     var formattedPrice: String {
         let currencyFormatter = NumberFormatter()
