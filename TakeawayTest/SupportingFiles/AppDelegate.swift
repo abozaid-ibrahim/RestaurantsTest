@@ -6,15 +6,14 @@
 //  Copyright © 2020 abuzeid. All rights reserved.
 //
 
+import RxSwift
 import UIKit
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
-    var window: UIWindow?
+final class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        window = UIWindow()
-        AppNavigator.shared.set(window: window!)
+        //debugRxResources()
         return true
     }
 
@@ -23,5 +22,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                      configurationForConnecting connectingSceneSession: UISceneSession,
                      options: UIScene.ConnectionOptions) -> UISceneConfiguration {
         return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
+    }
+
+    private func debugRxResources() {
+        #if DEBUG
+            _ = Observable<Int>.interval(.seconds(2), scheduler: ConcurrentDispatchQueueScheduler(qos: .default))
+                .subscribe(onNext: { _ in
+                    log("\(RxSwift.Resources.total)")
+                })
+            log("\(RxSwift.Resources.total)")
+        #endif
     }
 }

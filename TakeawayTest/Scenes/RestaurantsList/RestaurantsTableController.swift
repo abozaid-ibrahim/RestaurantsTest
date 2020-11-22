@@ -10,15 +10,25 @@ import RxCocoa
 import RxSwift
 import UIKit
 
-final class RestaurantsTableController: UITableViewController {
+final class RestaurantsTableController: UIViewController {
     private let viewModel: RestaurantsViewModelType
-    private var dataList: [Restaurant] { viewModel.dataList }
     private let disposeBag = DisposeBag()
-
+    private let tableView = UITableView()
+    private var indicatorHeight: CGFloat = 100
     init(with viewModel: RestaurantsViewModelType = RestaurantsViewModel()) {
         self.viewModel = viewModel
-        super.init(style: .plain)
+        super.init(nibName: nil, bundle: nil)
         title = .discover
+    }
+
+    override func loadView() {
+        view = UIView()
+        setup()
+    }
+
+    func setup() {
+        view.addSubview(tableView)
+        tableView.setConstrainsEqualToParentEdges()
     }
 
     @available(*, unavailable)
@@ -28,82 +38,57 @@ final class RestaurantsTableController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        setup()
         setupTableView()
         setupSearchBar()
         bindToViewModel()
-        viewModel.loadRestaurants(with: "")
+        viewModel.loadData(on: ConcurrentDispatchQueueScheduler(qos: .background))
     }
 }
-
-// MARK: - Table view data source
-
-extension RestaurantsTableController {
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return dataList.count
-    }
-
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeue(cell: RestaurantTableCell.self, for: indexPath)
-        cell.setData(for: dataList[indexPath.row],
-                     onFavourite: { [unowned self] in self.viewModel.toggleFavourite(at: indexPath.row) })
-        return cell
-    }
-}
-
-// MARK: - Private
 
 private extension RestaurantsTableController {
-    var indicator: ActivityIndicatorFooterView? {
-        return tableView.tableFooterView as? ActivityIndicatorFooterView
-    }
-
     func setupTableView() {
         navigationItem.rightBarButtonItem = .init(title: .sort,
                                                   style: .plain,
                                                   target: self,
                                                   action: #selector(openFilters(_:)))
-        tableView.tableFooterView = ActivityIndicatorFooterView()
+        tableView.tableFooterView = UIView()
+        tableView.tableHeaderView = ActivityIndicatorView()
         tableView.register(RestaurantTableCell.self)
         tableView.showsVerticalScrollIndicator = false
         navigationController?.hidesBarsOnSwipe = true
     }
 
     @objc func openFilters(_ sender: Any) {
-        guard let filter = AppNavigator.shared.push(.filter) as? SortingController else { return }
-        filter.selectedFilter
-            .bind(onNext: { [unowned self] in self.viewModel.sort(by: $0) })
-            .disposed(by: filter.disposeBag)
+        guard let controller = AppNavigator.shared.push(.filter) as? SortingController else { return }
+        controller.selectedFilter
+            .bind(onNext: { [unowned self] in self.viewModel.observer.sortingType.accept($0) })
+            .disposed(by: controller.disposeBag)
     }
 
     func bindToViewModel() {
-        viewModel.reload
-            .asDriver(onErrorJustReturn: .none)
-            .drive(onNext: { [unowned self] in
-                if case let TableReload.row(row) = $0 {
-                    self.tableView.reloadRows(at: [IndexPath(row: row, section: 0)], with: .none)
-                } else if case TableReload.all = $0 {
-                    self.tableView.reloadData()
-                }
-            })
-            .disposed(by: disposeBag)
-        viewModel.error
+        viewModel.observer.uiData
+            .bind(to: tableView.rx.items(cellIdentifier: RestaurantTableCell.identifier,
+                                         cellType: RestaurantTableCell.self)) { [unowned self] row, model, cell in
+                cell.setData(for: model,
+                             onFavourite: { self.viewModel.toggleFavourite(at: row) })
+            }.disposed(by: disposeBag)
+
+        viewModel.observer.error
             .asDriver(onErrorJustReturn: "")
             .drive(onNext: { [unowned self] in self.show(error: $0) })
             .disposed(by: disposeBag)
 
-        viewModel.isLoading
-            .asDriver(onErrorJustReturn: false)
-            .drive(onNext: { [unowned self] in
-                self.tableView.sectionFooterHeight = $0 ? 80 : 0
-                self.indicator?.set(isLoading: $0)
-            })
+        viewModel.observer.isLoading.asDriver()
+            .drive(onNext: { [unowned self] in self.tableView.isLoading($0) })
             .disposed(by: disposeBag)
     }
 
     func setupSearchBar() {
         let searchController = UISearchController(searchResultsController: nil)
-        searchController.searchResultsUpdater = self
-        searchController.searchBar.delegate = self
+        searchController.searchBar.rx.value
+            .bind(onNext: { [unowned self] in self.viewModel.observer.search.accept($0) })
+            .disposed(by: disposeBag)
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.placeholder = .search
         searchController.searchBar.isTranslucent = false
@@ -113,24 +98,8 @@ private extension RestaurantsTableController {
     }
 }
 
-// MARK: - UISearchResultsUpdating
-
-extension RestaurantsTableController: UISearchResultsUpdating, UISearchBarDelegate {
-    func updateSearchResults(for searchController: UISearchController) {
-        guard searchController.isActive else {
-            viewModel.searchCanceled()
-            return
-        }
-        viewModel.searchFor.onNext(searchController.searchBar.text ?? "")
-    }
-
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        viewModel.searchFor.onNext(searchBar.text ?? "")
-    }
-}
-
 extension String {
-    static var sort: String { return "Sort".localizedCapitalized }
-    static var search: String { return "Search".localizedCapitalized }
-    static var discover: String { return "Discover".localizedCapitalized }
+    static var sort: String { "Sort".localizedCapitalized }
+    static var search: String { "Search".localizedCapitalized }
+    static var discover: String { "Discover".localizedCapitalized }
 }

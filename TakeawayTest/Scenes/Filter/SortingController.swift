@@ -9,12 +9,17 @@
 import RxSwift
 import UIKit
 
-final class SortingController: UITableViewController {
-    private var dataList: [SortingCreteria] = SortingCreteria.allCases
+final class SortingController: UIViewController {
+    private let tableView = UITableView()
     private(set) var disposeBag = DisposeBag()
-    let selectedFilter: PublishSubject<SortingCreteria> = .init()
+    private(set) lazy var selectedFilter: Observable<SortingCreteria> = self
+        .tableView
+        .rx
+        .modelSelected(SortingCreteria.self)
+        .asObservable()
+
     init() {
-        super.init(style: .plain)
+        super.init(nibName: nil, bundle: nil)
         title = .sortedBy
     }
 
@@ -23,70 +28,53 @@ final class SortingController: UITableViewController {
         fatalError("Unsupported")
     }
 
+    override func loadView() {
+        view = UIView()
+        view.addSubview(tableView)
+        tableView.setConstrainsEqualToParentEdges()
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTableView()
     }
-}
 
-// MARK: - Table view data source
-
-extension SortingController {
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return dataList.count
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.hidesBarsOnSwipe = false
     }
 
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeue(cell: SortingCell.self, for: indexPath)
-        cell.textLabel?.text = dataList[indexPath.row].title
-        return cell
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        navigationController?.hidesBarsOnSwipe = true
     }
 
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        selectedFilter.onNext(dataList[indexPath.row])
-        navigationController?.popViewController(animated: true)
-    }
-}
-
-// MARK: - Private
-
-private extension SortingController {
-    func setupTableView() {
+    private func setupTableView() {
         tableView.register(SortingCell.self, forCellReuseIdentifier: SortingCell.identifier)
-        tableView.rowHeight = 40
         tableView.tableFooterView = UIView()
+        Observable<[SortingCreteria]>
+            .from(optional: SortingCreteria.allCases)
+            .bind(to: tableView.rx.items(cellIdentifier: SortingCell.identifier)) { _, model, cell in
+                cell.textLabel?.text = model.rawValue
+            }.disposed(by: disposeBag)
+
+        tableView.rx
+            .modelSelected(SortingCreteria.self)
+            .subscribe(onNext: { [unowned self] _ in
+                self.navigationController?.popViewController(animated: true)
+            }).disposed(by: disposeBag)
     }
 }
 
 enum SortingCreteria: String, CaseIterable {
-    case bestMatch
-    case newest
-    case ratingAverage
-    case distance
-    case popularity
-    case averageProductPrice
-    case deliveryCosts
-    case minimumCost
-    var title: String {
-        switch self {
-        case .bestMatch:
-            return "Best Match"
-        case .newest:
-            return "Newest"
-        case .ratingAverage:
-            return "Rating average"
-        case .distance:
-            return "Distance"
-        case .popularity:
-            return "Popularity"
-        case .averageProductPrice:
-            return "Average product price"
-        case .deliveryCosts:
-            return "Delivery costs"
-        case .minimumCost:
-            return "Minimum cost"
-        }
-    }
+    case bestMatch = "Best Match"
+    case newest = "Newest"
+    case ratingAverage = "Rating average"
+    case distance = "Distance"
+    case popularity = "Popularity"
+    case averageProductPrice = "Average product price"
+    case deliveryCosts = "Delivery costs"
+    case minimumCost = "Minimum cost"
 }
 
 extension String {

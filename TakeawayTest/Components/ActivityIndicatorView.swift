@@ -1,5 +1,5 @@
 //
-//  ActivityIndicatorFooterView.swift
+//  ActivityIndicatorView.swift
 //  TakeawayTest
 //
 //  Created by abuzeid on 19.11.20.
@@ -8,11 +8,11 @@
 
 import UIKit
 
-final class ActivityIndicatorFooterView: UIView {
+final class ActivityIndicatorView: UIView {
     private let activityView: UIActivityIndicatorView
     override init(frame: CGRect) {
         if #available(iOS 13, *) {
-            activityView = UIActivityIndicatorView(style: UIActivityIndicatorView.Style.medium)
+            activityView = UIActivityIndicatorView(style: UIActivityIndicatorView.Style.large)
         } else {
             activityView = UIActivityIndicatorView(style: .gray)
         }
@@ -30,16 +30,35 @@ final class ActivityIndicatorFooterView: UIView {
     }
 
     func set(isLoading: Bool) {
-        isLoading ? activityView.startAnimating() : activityView.stopAnimating()
+        if isLoading {
+            activityView.startAnimating()
+        } else {
+            activityView.stopAnimating()
+        }
     }
 
     private func setup() {
         activityView.hidesWhenStopped = true
-        activityView.startAnimating()
         addSubview(activityView)
         activityView.translatesAutoresizingMaskIntoConstraints = false
         addConstraints([
             activityView.centerYAnchor.constraint(equalTo: centerYAnchor),
             activityView.centerXAnchor.constraint(equalTo: centerXAnchor)])
+    }
+}
+
+extension UITableView {
+    func isLoading(_ loading: Bool) {
+        (tableHeaderView as? ActivityIndicatorView)?.set(isLoading: loading)
+        sizeHeaderToFit(loading)
+    }
+
+    func sizeHeaderToFit(_ loading: Bool) {
+        if let headerView = tableHeaderView {
+            var frame = headerView.frame
+            frame.size.height = loading ? 80 : 0
+            headerView.frame = frame
+            tableHeaderView = headerView
+        }
     }
 }

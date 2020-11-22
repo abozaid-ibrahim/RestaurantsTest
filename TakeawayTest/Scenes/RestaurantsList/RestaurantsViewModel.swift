@@ -11,133 +11,58 @@ import RxCocoa
 import RxSwift
 
 protocol RestaurantsViewModelType {
-    var dataList: [Restaurant] { get }
-    var error: PublishSubject<String> { get }
-    var searchFor: PublishSubject<String> { get }
-    var isLoading: PublishSubject<Bool> { get }
-    var reload: PublishSubject<TableReload> { get }
-    func searchCanceled()
-    func sort(by type: SortingCreteria)
-    func loadRestaurants(with name: String)
+    var observer: Action { get }
+    func loadData(on scheduler: SchedulerType)
     func toggleFavourite(at position: Int)
 }
 
 final class RestaurantsViewModel: RestaurantsViewModelType {
     private let disposeBag = DisposeBag()
     private let dataLoader: RestaurantsDataSource
-    let error = PublishSubject<String>()
-    let searchFor = PublishSubject<String>()
-    let isLoading = PublishSubject<Bool>()
-    let isSearchLoading = PublishSubject<Bool>()
-    let loadPreviousSearches = PublishSubject<String>()
-
-    private(set) var reload = PublishSubject<TableReload>()
-    private(set) var dataList: [Restaurant] = []
-    private(set) var cachedData: [Restaurant] = []
-    private(set) var sortingType: SortingCreteria?
-
+    private(set) var cache: [Restaurant] = []
+    let observer = Action()
     init(with dataLoader: RestaurantsDataSource = RestaurantsLocalLoader()) {
         self.dataLoader = dataLoader
-        bindForSearch()
-    }
-
-    func searchCanceled() {
-        dataList = cachedData
-        sortAndUpdateUI()
-    }
-
-    func sort(by type: SortingCreteria) {
-        sortingType = type
-        sortAndUpdateUI()
-    }
-
-    func loadRestaurants(with name: String) {
-        guard cachedData.isEmpty else {
-            name.isEmpty ? searchCanceled() : filter(by: name)
-            return
-        }
-        loadDataForFirstTime(name)
+        subscribeForUIInputs()
     }
 
     func toggleFavourite(at position: Int) {
-        dataList[position].isFavourite.toggle()
-        reload.onNext(.row(position))
-        /// since we don't have a remote  api I want to updated my cached data.
-        guard let index = cachedData.firstIndex(where: { $0 == self.dataList[position] }) else { return }
-        cachedData[index].isFavourite.toggle()
-    }
-}
-
-// MARK: private
-
-private extension RestaurantsViewModel {
-    func filter(by name: String) {
-        dataList = cachedData
-            .filter { $0.name.lowercased().contains(name.lowercased()) }
+        guard let index = cache.firstIndex(where: { $0 == self.observer.uiData.value[position] }) else { return }
+        cache[index].isFavourite.toggle()
         sortAndUpdateUI()
     }
 
-    func sortAndUpdateUI() {
-        dataList = dataList
-            .sorted(by: sortingType)
-            .sortedByStatus()
-        reload.onNext(.all)
-    }
-
-    func bindForSearch() {
-        searchFor.distinctUntilChanged()
-            .debounce(.milliseconds(250), scheduler: SharingScheduler.make())
-            .observeOn(ConcurrentDispatchQueueScheduler(qos: .default))
-            .subscribe(onNext: { [weak self] text in
-                guard let self = self else { return }
-                self.loadRestaurants(with: text)
-            }).disposed(by: disposeBag)
-    }
-
-    func loadDataForFirstTime(_ name: String) {
-        isLoading.onNext(true)
+    func loadData(on scheduler: SchedulerType) {
+        observer.isLoading.accept(true)
         dataLoader.loadRestaurants()
-            .observeOn(ConcurrentDispatchQueueScheduler(qos: .default))
-            .subscribe(onNext: { [weak self] data in
-                guard let self = self else { return }
-                self.cachedData = data
-                self.dataList = data
-                name.isEmpty ? self.sortAndUpdateUI() : self.filter(by: name)
-                self.isLoading.onNext(false)
-            }, onError: { [weak self] error in
-                self?.error.onNext(error.localizedDescription)
-                self?.isLoading.onNext(false)
-            }).dispose()
+            .subscribeOn(scheduler)
+            .subscribe(onNext: { [unowned self] in self.cache = $0 },
+                       onError: { [unowned self] in self.observer.error.accept($0.localizedDescription) },
+                       onCompleted: { [unowned self] in
+                           self.observer.isLoading.accept(false)
+                           self.sortAndUpdateUI()
+                       })
+            .disposed(by: disposeBag)
     }
 }
 
-extension Array where Element == Restaurant {
-    func sortedByStatus() -> [Restaurant] {
-        return sorted(by: { $0.status.priority < $1.status.priority })
+private extension RestaurantsViewModel {
+    func sortAndUpdateUI() {
+        let name = observer.search.value ?? ""
+        let dataList = name.isEmpty ? cache : cache.filter { $0.name.contains(name) }
+            .sorted(by: observer.sortingType.value)
+            .sortedByStatus()
+        observer.uiData.accept(dataList)
     }
 
-    func sorted(by: SortingCreteria?) -> [Restaurant] {
-        guard let sort = by else {
-            return self
-        }
-        /// try to use object key path
-        switch sort {
-        case .bestMatch:
-            return sorted(by: { $0.sortingValues.bestMatch > $1.sortingValues.bestMatch })
-        case .averageProductPrice:
-            return sorted(by: { $0.sortingValues.averageProductPrice > $1.sortingValues.averageProductPrice })
-        case .newest:
-            return sorted(by: { $0.sortingValues.newest > $1.sortingValues.newest })
-        case .ratingAverage:
-            return sorted(by: { $0.sortingValues.ratingAverage > $1.sortingValues.ratingAverage })
-        case .distance:
-            return sorted(by: { $0.sortingValues.distance > $1.sortingValues.distance })
-        case .popularity:
-            return sorted(by: { $0.sortingValues.popularity > $1.sortingValues.popularity })
-        case .deliveryCosts:
-            return sorted(by: { $0.sortingValues.deliveryCosts > $1.sortingValues.deliveryCosts })
-        case .minimumCost:
-            return sorted(by: { $0.sortingValues.minCost > $1.sortingValues.minCost })
-        }
+    func subscribeForUIInputs() {
+        observer.search.distinctUntilChanged()
+            .debounce(.milliseconds(200), scheduler: SharingScheduler.make())
+            .subscribeOn(ConcurrentDispatchQueueScheduler.init(qos: .background))
+            .subscribe(onNext: { [unowned self] _ in self.sortAndUpdateUI() })
+            .disposed(by: disposeBag)
+
+        observer.sortingType.bind(onNext: { [unowned self] _ in self.sortAndUpdateUI() })
+            .disposed(by: disposeBag)
     }
 }

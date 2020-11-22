@@ -24,7 +24,6 @@ public extension UITableView {
         return cell
     }
 
-    /// WARNING: you must set the reuse identifier as same as the nib file name.
     func register<T: UITableViewCell>(_: T.Type) {
         let nib = UINib(nibName: T.identifier, bundle: Bundle(for: T.self))
         register(nib, forCellReuseIdentifier: T.identifier)
