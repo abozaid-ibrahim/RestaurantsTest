@@ -6,17 +6,14 @@
 //  Copyright © 2020 abuzeid. All rights reserved.
 //
 
+import RxCocoa
 import RxSwift
 import UIKit
 
 final class SortingController: UIViewController {
     private let tableView = UITableView()
     private(set) var disposeBag = DisposeBag()
-    private(set) lazy var selectedFilter: Observable<SortingCreteria> = self
-        .tableView
-        .rx
-        .modelSelected(SortingCreteria.self)
-        .asObservable()
+    let selectedFilter = PublishRelay<SortingCreteria>()
 
     init() {
         super.init(nibName: nil, bundle: nil)
@@ -32,6 +29,8 @@ final class SortingController: UIViewController {
         view = UIView()
         view.addSubview(tableView)
         tableView.setConstrainsEqualToParentEdges()
+        tableView.accessibilityIdentifier = "SortingTable"
+
     }
 
     override func viewDidLoad() {
@@ -60,7 +59,8 @@ final class SortingController: UIViewController {
 
         tableView.rx
             .modelSelected(SortingCreteria.self)
-            .subscribe(onNext: { [unowned self] _ in
+            .subscribe(onNext: { [unowned self] in
+                self.selectedFilter.accept($0)
                 self.navigationController?.popViewController(animated: true)
             }).disposed(by: disposeBag)
     }

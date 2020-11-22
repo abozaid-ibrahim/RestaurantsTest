@@ -7,10 +7,17 @@
 //
 
 import Foundation
+extension Bool {
+    var int: Int { return self ? 1 : 0 }
+}
 
 extension Array where Element == Restaurant {
     func sortedByStatus() -> [Restaurant] {
         return sorted(by: { $0.status.priority < $1.status.priority })
+    }
+
+    func sortedByFavourite() -> [Restaurant] {
+        return sorted(by: { $0.isFavourite.int > $1.isFavourite.int })
     }
 
     func sorted(by: SortingCreteria?) -> [Restaurant] {

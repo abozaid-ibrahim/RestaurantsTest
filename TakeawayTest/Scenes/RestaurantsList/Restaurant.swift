@@ -13,13 +13,14 @@ struct RestaurantsResponse: Codable {
 }
 
 struct Restaurant: Equatable {
+    let id = UUID()
     let name: String
     let status: Status
     let sortingValues: SortingValues
     var isFavourite: Bool
 
     static func == (lhs: Restaurant, rhs: Restaurant) -> Bool {
-        return lhs.name == rhs.name
+        return lhs.id == rhs.id && lhs.isFavourite == rhs.isFavourite 
     }
 }
 

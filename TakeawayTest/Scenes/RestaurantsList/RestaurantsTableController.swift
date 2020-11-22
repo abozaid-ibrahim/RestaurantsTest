@@ -14,7 +14,6 @@ final class RestaurantsTableController: UIViewController {
     private let viewModel: RestaurantsViewModelType
     private let disposeBag = DisposeBag()
     private let tableView = UITableView()
-    private var indicatorHeight: CGFloat = 100
     init(with viewModel: RestaurantsViewModelType = RestaurantsViewModel()) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -23,12 +22,9 @@ final class RestaurantsTableController: UIViewController {
 
     override func loadView() {
         view = UIView()
-        setup()
-    }
-
-    func setup() {
         view.addSubview(tableView)
         tableView.setConstrainsEqualToParentEdges()
+        tableView.accessibilityIdentifier = "RestaurantsTable"
     }
 
     @available(*, unavailable)
@@ -38,11 +34,10 @@ final class RestaurantsTableController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        setup()
         setupTableView()
         setupSearchBar()
         bindToViewModel()
-        viewModel.loadData(on: ConcurrentDispatchQueueScheduler(qos: .background))
+        viewModel.loadData()
     }
 }
 
@@ -67,7 +62,7 @@ private extension RestaurantsTableController {
     }
 
     func bindToViewModel() {
-        viewModel.observer.uiData
+        viewModel.observer.dataSource
             .bind(to: tableView.rx.items(cellIdentifier: RestaurantTableCell.identifier,
                                          cellType: RestaurantTableCell.self)) { [unowned self] row, model, cell in
                 cell.setData(for: model,

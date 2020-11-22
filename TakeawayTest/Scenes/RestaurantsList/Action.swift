@@ -13,6 +13,6 @@ struct Action {
     let error = PublishRelay<String>()
     let search = BehaviorRelay<String?>(value: .none)
     let isLoading = BehaviorRelay<Bool>(value: true)
-    let uiData = BehaviorRelay<[Restaurant]>(value: [])
+    let dataSource = BehaviorRelay<[Restaurant]>(value: [])
     let sortingType = BehaviorRelay<SortingCreteria>(value: .ratingAverage)
 }
