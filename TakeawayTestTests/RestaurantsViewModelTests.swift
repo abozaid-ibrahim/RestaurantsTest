@@ -15,7 +15,7 @@ import XCTest
 
 final class TakeawayTestTests: XCTestCase {
     private var disposeBag: DisposeBag!
-    var scheduler: TestScheduler!
+    private var scheduler: TestScheduler!
 
     override func setUpWithError() throws {
         disposeBag = DisposeBag()
@@ -26,17 +26,15 @@ final class TakeawayTestTests: XCTestCase {
         SharingScheduler.mock(scheduler: scheduler) {
             let viewModel = RestaurantsViewModel(with: LoaderMocking(), scheduler: scheduler)
             let uiModel = scheduler.createObserver([Restaurant].self)
-            viewModel.observer.dataSource
-                .bind(to: uiModel)
-                .disposed(by: disposeBag)
+            viewModel.observer.dataSource.bind(to: uiModel).disposed(by: disposeBag)
             scheduler.scheduleAt(100, action: { viewModel.loadData() })
             scheduler.scheduleAt(700, action: { viewModel.observer.search.accept("kf") })
             scheduler.scheduleAt(1000, action: { viewModel.observer.search.accept("pizza") })
             scheduler.start()
             let streamValues: [Recorded<Event<[Restaurant]>>] = [.next(0, []),
-                                                                 .next(101, LoaderMocking.items),
-                                                                 .next(900, [LoaderMocking.kfc]),
-                                                                 .next(1200, [])]
+                                                                 .next(101 , LoaderMocking.items),
+                                                                 .next(700 + viewModel.searchDebounceTime, [LoaderMocking.kfc]),
+                                                                 .next(1000 + viewModel.searchDebounceTime, [])]
             XCTAssertEqual(uiModel.events, streamValues)
         }
     }
@@ -52,7 +50,6 @@ final class TakeawayTestTests: XCTestCase {
         scheduler.start()
         var rudi = LoaderMocking.rudi
         rudi.isFavourite.toggle()
-
         var mac = LoaderMocking.mac
         mac.isFavourite.toggle()
         let streamValues: [Recorded<Event<[Restaurant]>>]

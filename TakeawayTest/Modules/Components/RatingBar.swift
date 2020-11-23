@@ -17,24 +17,23 @@ protocol RatingBarType {
 }
 
 final class RatingBar: UIView, RatingBarType {
-    @IBInspectable var rating: CGFloat = 0 {
-        didSet {
-            if 0 >= rating { rating = 0 }
-            else if ratingMax <= rating { rating = ratingMax }
-            self.setNeedsLayout()
-        }
-    }
-
     @IBInspectable var ratingMax: CGFloat = 5
-    private var numStars: Int { Int(ratingMax) }
     @IBInspectable var canAnimation: Bool = false
     @IBInspectable var animationTimeInterval: TimeInterval = 0.2
     @IBInspectable var isIndicator: Bool = false
     @IBInspectable var imageLight: UIImage = UIImage(named: "star_on")!
     @IBInspectable var imageDark: UIImage = UIImage(named: "star_off")!
+    @IBInspectable var rating: CGFloat = 0 {
+        didSet {
+            if 0 >= rating { rating = 0 }
+            else if ratingMax <= rating { rating = ratingMax }
+            setNeedsLayout()
+        }
+    }
 
     private var foregroundRatingView: UIView!
     private var backgroundRatingView: UIView!
+    private var numStars: Int { Int(ratingMax) }
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -90,7 +89,7 @@ private extension RatingBar {
         let view = UIView(frame: bounds)
         view.clipsToBounds = true
         view.backgroundColor = UIColor.clear
-        let container = newStackView
+        let container = starsContainerView
         view.addSubview(container)
         container.setConstrainsEqualToParentEdges()
         for _ in 0 ..< numStars {
@@ -101,7 +100,7 @@ private extension RatingBar {
         return view
     }
 
-    var newStackView: UIStackView {
+    var starsContainerView: UIStackView {
         let container = UIStackView()
         container.alignment = .fill
         container.axis = .horizontal

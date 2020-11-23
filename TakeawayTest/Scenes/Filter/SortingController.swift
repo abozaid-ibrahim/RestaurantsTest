@@ -59,7 +59,7 @@ final class SortingController: UIViewController {
 
         tableView.rx
             .modelSelected(SortingCreteria.self)
-            .subscribe(onNext: { [unowned self] in
+            .bind(onNext: { [unowned self] in
                 self.selectedFilter.accept($0)
                 self.navigationController?.popViewController(animated: true)
             }).disposed(by: disposeBag)

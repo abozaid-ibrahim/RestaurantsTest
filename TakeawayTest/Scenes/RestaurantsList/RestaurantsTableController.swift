@@ -74,7 +74,8 @@ private extension RestaurantsTableController {
             .drive(onNext: { [unowned self] in self.show(error: $0) })
             .disposed(by: disposeBag)
 
-        viewModel.observer.isLoading.asDriver()
+        viewModel.observer.isLoading
+            .asDriver()
             .drive(onNext: { [unowned self] in self.tableView.isLoading($0) })
             .disposed(by: disposeBag)
     }

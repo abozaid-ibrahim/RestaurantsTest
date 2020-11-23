@@ -11,19 +11,20 @@ import RxCocoa
 import RxSwift
 
 protocol RestaurantsViewModelType {
-    var observer: Action { get }
+    var observer: Observer { get }
     func loadData()
     func toggleFavourite(at position: Int)
 }
 
 final class RestaurantsViewModel: RestaurantsViewModelType {
+    let searchDebounceTime = 200
     private let disposeBag = DisposeBag()
     private let dataLoader: RestaurantsDataSource
     private let scheduler: SchedulerType
     private(set) var cache: [Restaurant] = []
-    let observer = Action()
+    let observer = Observer()
     init(with dataLoader: RestaurantsDataSource = RestaurantsLocalLoader(),
-         scheduler: SchedulerType = ConcurrentDispatchQueueScheduler(qos: .background)) {
+         scheduler: SchedulerType = ConcurrentDispatchQueueScheduler(qos: .default)) {
         self.dataLoader = dataLoader
         self.scheduler = scheduler
         subscribeForUIInputs()
@@ -61,7 +62,7 @@ private extension RestaurantsViewModel {
 
     func subscribeForUIInputs() {
         observer.search.distinctUntilChanged()
-            .debounce(.milliseconds(200), scheduler: SharingScheduler.make())
+            .debounce(.milliseconds(searchDebounceTime), scheduler: SharingScheduler.make())
             .filter { $0 != nil }
             .subscribeOn(scheduler)
             .subscribe(onNext: { [unowned self] _ in self.sortAndUpdateUI() })

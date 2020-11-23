@@ -38,7 +38,6 @@ final class ActivityIndicatorView: UIView {
     }
 
     private func setup() {
-        activityView.hidesWhenStopped = true
         addSubview(activityView)
         activityView.translatesAutoresizingMaskIntoConstraints = false
         addConstraints([
@@ -54,11 +53,10 @@ extension UITableView {
     }
 
     func sizeHeaderToFit(_ loading: Bool) {
-        if let headerView = tableHeaderView {
-            var frame = headerView.frame
-            frame.size.height = loading ? 80 : 0
-            headerView.frame = frame
-            tableHeaderView = headerView
-        }
+        guard let headerView = tableHeaderView else { return }
+        var frame = headerView.frame
+        frame.size.height = loading ? 80 : 0
+        headerView.frame = frame
+        tableHeaderView = headerView
     }
 }

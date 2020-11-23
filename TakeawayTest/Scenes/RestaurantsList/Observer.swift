@@ -9,7 +9,7 @@
 import Foundation
 import RxCocoa
 
-struct Action {
+struct Observer {
     let error = PublishRelay<String>()
     let search = BehaviorRelay<String?>(value: .none)
     let isLoading = BehaviorRelay<Bool>(value: true)
